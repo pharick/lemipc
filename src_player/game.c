@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:59:32 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 18:05:27 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void	player_start(t_shared_data *shared_data, t_player_data *player_data)
 		player_data->coord.x = rand() % MAP_WIDTH;
 		player_data->coord.y = rand() % MAP_HEIGHT;
 	}
-	shared_data->map[player_data->coord.y][player_data->coord.x] = player_data->team_id;
+	shared_data->map[player_data->coord.y][player_data->coord.x]
+		= player_data->team_id;
 }
 
 static void	player_finish(t_shared_data *shared_data,

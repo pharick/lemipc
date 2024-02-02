@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 00:17:31 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:21:36 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 18:04:24 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static int	get_shared_memory(key_t key, bool create)
 	shm_id = shmget(key, sizeof(t_shared_data), 0666);
 	if (shm_id == -1 && create)
 	{
-		shm_id = shmget(key, sizeof(t_shared_data), 0666 | IPC_CREAT | IPC_EXCL);
+		shm_id = shmget(key, sizeof(t_shared_data),
+				0666 | IPC_CREAT | IPC_EXCL);
 		if (shm_id == -1)
 			return (-1);
 	}

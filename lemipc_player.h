@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 23:22:58 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:32:07 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 18:02:59 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void					with_data(int sem_id, t_shared_data *shared_data,
 
 size_t					game_loop(size_t team_id, t_shared_data *shared_data,
 							const t_shared_resources_ids *shared_resources_ids);
-void					player_turn(t_shared_data *shared_data, t_player_data *player_data);
+void					player_turn(t_shared_data *shared_data,
+							t_player_data *player_data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 11:40:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 15:05:19 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 18:08:43 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 bool	g_running;
 
-static bool	check_game_over(t_coord coord, const size_t map[MAP_HEIGHT][MAP_WIDTH])
+static bool	check_game_over(t_coord coord,
+	const size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
 	size_t	team_id;
 	size_t	i;
@@ -29,7 +30,9 @@ static bool	check_game_over(t_coord coord, const size_t map[MAP_HEIGHT][MAP_WIDT
 		j = coord.x - 1;
 		while (j <= coord.x + 1)
 		{
-			if (i >= 0 && i < MAP_HEIGHT && j >= 0 && j < MAP_WIDTH && map[i][j] != 0 && map[i][j] != team_id)
+			if (i >= 0 && i < MAP_HEIGHT && j >= 0
+				&& j < MAP_WIDTH && map[i][j] != 0
+				&& map[i][j] != team_id)
 				if (++enemy_count >= 2)
 					return (true);
 			j++;
@@ -39,7 +42,8 @@ static bool	check_game_over(t_coord coord, const size_t map[MAP_HEIGHT][MAP_WIDT
 	return (false);
 }
 
-static t_coord	*find_nearest_enemy(const t_coord *coord, const size_t map[MAP_HEIGHT][MAP_WIDTH])
+static t_coord	*find_nearest_enemy(const t_coord *coord,
+	const size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
 	t_coord	*nearest_enemy;
 	size_t	min_distance;
@@ -57,7 +61,8 @@ static t_coord	*find_nearest_enemy(const t_coord *coord, const size_t map[MAP_HE
 		{
 			if (map[i][j] != 0 && map[i][j] != map[coord->y][coord->x])
 			{
-				distance = abs((int)i - (int)coord->y) + abs((int)j - (int)coord->x);
+				distance = abs((int)i - (int)coord->y)
+					+ abs((int)j - (int)coord->x);
 				if (distance < min_distance)
 				{
 					min_distance = distance;
@@ -74,7 +79,8 @@ static t_coord	*find_nearest_enemy(const t_coord *coord, const size_t map[MAP_HE
 	return (nearest_enemy);
 }
 
-static void	move_towards_coord(t_coord *coord, const t_coord *target, size_t map[MAP_HEIGHT][MAP_WIDTH])
+static void	move_towards_coord(t_coord *coord, const t_coord *target,
+	size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
 	int		dx;
 	int		dy;
@@ -84,20 +90,27 @@ static void	move_towards_coord(t_coord *coord, const t_coord *target, size_t map
 	dy = (int)target->y - (int)coord->y;
 	if (abs(dx) > abs(dy))
 	{
-		new_coord.x = coord->x + (dx > 0 ? 1 : -1);
+		if (dx > 0)
+			new_coord.x = coord->x + 1;
+		else
+			new_coord.x = coord->x - 1;
 		new_coord.y = coord->y;
 	}
 	else
 	{
 		new_coord.x = coord->x;
-		new_coord.y = coord->y + (dy > 0 ? 1 : -1);
+		if (dy > 0)
+			new_coord.y = coord->y + 1;
+		else
+			new_coord.y = coord->y - 1;
 	}
-	if (new_coord.x >= 0 && new_coord.x < MAP_WIDTH && new_coord.y >= 0 && new_coord.y < MAP_HEIGHT
+	if (new_coord.x >= 0 && new_coord.x < MAP_WIDTH
+		&& new_coord.y >= 0 && new_coord.y < MAP_HEIGHT
 		&& map[new_coord.y][new_coord.x] == 0)
 	{
 		map[new_coord.y][new_coord.x] = map[coord->y][coord->x];
 		map[coord->y][coord->x] = 0;
-		*coord = new_coord;	
+		*coord = new_coord;
 	}
 }
 
