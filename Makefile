@@ -15,7 +15,7 @@ SRC_COMMON_DIR		:= src_common
 
 PLAYER_SRC_FILES	:= main.c shared_resources.c shared_data.c game.c turn.c
 DISPLAY_SRC_FILES	:= main.c
-COMMON_SRC_FILES	:=
+COMMON_SRC_FILES	:= shared_resources.c shared_data.c
 
 PLAYER_SOURCES		:= $(addprefix $(SRC_PLAYER_DIR)/, $(PLAYER_SRC_FILES))
 DISPLAY_SOURCES		:= $(addprefix $(SRC_DISPLAY_DIR)/, $(DISPLAY_SRC_FILES))
@@ -39,6 +39,9 @@ $(OBJ_PLAYER):	%.o:	%.c
 
 $(OBJ_DISPLAY):	%.o:	%.c
 	$(CC) $(CFLAGS_DISPLAY) $(CFLAGS_COMMON) -c -o $@ $<
+
+$(OBJ_COMMON):	%.o:	%.c
+	$(CC) $(CFLAGS_COMMON) -c -o $@ $<
 
 -include $(DEPS)
 

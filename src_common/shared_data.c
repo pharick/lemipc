@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shared_resources.c                                 :+:      :+:    :+:   */
+/*   shared_data.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/30 00:17:31 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:22:09 by cbelva           ###   ########.fr       */
+/*   Created: 2024/02/01 16:03:08 by cbelva            #+#    #+#             */
+/*   Updated: 2024/02/02 16:31:42 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lemipc_player.h"
+#include "lemipc_common.h"
 
-void	clean_shared_resources(t_shared_resources_ids *ids)
+t_shared_data	read_shared_data(int sem_id, t_shared_data *shared_data)
 {
-	if (ids == NULL)
-		return ;
-	if (ids->shm_id != -1)
-		shmctl(ids->shm_id, IPC_RMID, NULL);
-	if (ids->sem_id != -1)
-		semctl(ids->sem_id, 0, IPC_RMID);
-	free(ids);
+	t_shared_data	result;
+	struct sembuf	sem_op;
+
+	sem_op.sem_num = 0;
+	sem_op.sem_op = -1;
+	sem_op.sem_flg = 0;
+	semop(sem_id, &sem_op, 1);
+	result = *shared_data;
+	sem_op.sem_op = 1;
+	semop(sem_id, &sem_op, 1);
+	return (result);
 }
