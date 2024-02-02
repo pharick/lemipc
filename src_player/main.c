@@ -6,11 +6,11 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 16:26:48 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/01 23:25:57 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 16:11:13 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lemipc.h"
+#include "lemipc_player.h"
 
 static size_t	parse_team_id(const char *str)
 {
@@ -44,7 +44,7 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "Invalid team id. Should be a positive integer.\n");
 		return (EXIT_FAILURE);
 	}
-	shared_resources_ids = get_shared_resources();
+	shared_resources_ids = get_shared_resources(true);
 	if (shared_resources_ids == NULL)
 	{
 		fprintf(stderr, "Failed to get shared resources: %s\n",
@@ -60,6 +60,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	nb_players_left = game_loop(team_id, shared_data, shared_resources_ids);
+	shmdt(shared_data);
 	if (nb_players_left <= 0)
 		clean_shared_resources(shared_resources_ids);
 	return (EXIT_SUCCESS);

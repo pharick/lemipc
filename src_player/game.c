@@ -6,11 +6,11 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 12:27:44 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/02 15:05:04 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lemipc.h"
+#include "lemipc_player.h"
 
 bool	g_running;
 
