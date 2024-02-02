@@ -3,7 +3,7 @@ TARGET		= lemipc
 SRC_DIR		= ./src
 BUILD_DIR	= ./build
 
-SRCS		= main.c shared_resources.c shared_data.c game.c
+SRCS		= main.c shared_resources.c shared_data.c game.c turn.c
 SRCS_		= $(addprefix $(SRC_DIR)/, $(SRCS))
 OBJS		= $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS		= $(OBJS:.o=.d)
