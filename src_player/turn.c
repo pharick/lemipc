@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 11:40:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 18:08:43 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/04 15:48:12 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ static bool	check_game_over(t_coord coord,
 	size_t	team_id;
 	size_t	i;
 	size_t	j;
-	size_t	enemy_count;
+	size_t	enemy_counts[MAX_TEAMS];
 
 	team_id = map[coord.y][coord.x];
-	enemy_count = 0;
+	memset(enemy_counts, 0, sizeof(enemy_counts));
 	i = coord.y - 1;
 	while (i <= coord.y + 1)
 	{
@@ -33,7 +33,7 @@ static bool	check_game_over(t_coord coord,
 			if (i >= 0 && i < MAP_HEIGHT && j >= 0
 				&& j < MAP_WIDTH && map[i][j] != 0
 				&& map[i][j] != team_id)
-				if (++enemy_count >= 2)
+				if (++enemy_counts[map[i][j]] >= 2)
 					return (true);
 			j++;
 		}

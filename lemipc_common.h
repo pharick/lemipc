@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 15:36:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:34:08 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/04 13:05:15 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@
 # define MAP_WIDTH 10
 # define MAP_HEIGHT 10
 
+# include <stdio.h>
+# include <unistd.h>
 # include <stdbool.h>
 # include <stdlib.h>
 # include <errno.h>
+# include <string.h>
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <sys/sem.h>

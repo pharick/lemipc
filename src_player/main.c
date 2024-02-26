@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 16:26:48 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:11:13 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/04 15:49:04 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,18 @@ static size_t	parse_team_id(const char *str)
 	return (team_id);
 }
 
+int	return_failure(const char *msg, bool print_errno)
+{	
+	if (msg != NULL)
+	{
+		fprintf(stderr, "%s", msg);
+		if (print_errno)
+			fprintf(stderr, ": %s", strerror(errno));
+		fprintf(stderr, "\n");
+	}
+	return (EXIT_FAILURE);
+}
+
 int	main(int argc, char **argv)
 {
 	t_shared_resources_ids	*shared_resources_ids;
@@ -39,25 +51,16 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	team_id = parse_team_id(argv[1]);
-	if (team_id == 0)
-	{
-		fprintf(stderr, "Invalid team id. Should be a positive integer.\n");
-		return (EXIT_FAILURE);
-	}
+	if (team_id == 0 || team_id > MAX_TEAMS)
+		return (return_failure("Team id should be between 1 and 10", false));
 	shared_resources_ids = get_shared_resources(true);
 	if (shared_resources_ids == NULL)
-	{
-		fprintf(stderr, "Failed to get shared resources: %s\n",
-			strerror(errno));
-		return (EXIT_FAILURE);
-	}
+		return (return_failure("Failed to get shared resources", true));
 	shared_data = shmat(shared_resources_ids->shm_id, NULL, 0);
 	if (shared_data == (void *)-1)
 	{
-		fprintf(stderr, "Failed to attach shared memory: %s\n",
-			strerror(errno));
 		clean_shared_resources(shared_resources_ids);
-		return (EXIT_FAILURE);
+		return (return_failure("Failed to attach to shared memory", true));
 	}
 	nb_players_left = game_loop(team_id, shared_data, shared_resources_ids);
 	shmdt(shared_data);

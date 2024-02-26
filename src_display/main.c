@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:39:11 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 18:13:13 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/04 13:08:35 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ void	render_map(SDL_Renderer *renderer,
 			if (map[i][j] != 0)
 			{
 				color = get_team_color(map[i][j]);
-				printf("color for %zu: %d %d %d\n", map[i][j],
-					color.r, color.g, color.b);
 				SDL_SetRenderDrawColor(renderer,
 					color.r, color.g, color.b, color.a);
 				SDL_RenderFillRect(renderer, &rect);
@@ -111,12 +109,16 @@ int	main(void)
 	t_shared_resources_ids	*shared_resources_ids;
 	t_shared_data			*shared_data;
 
+	app = init_app();
+	if (app == NULL)
+		return (EXIT_FAILURE);
 	shared_resources_ids = get_shared_resources(false);
-	if (shared_resources_ids == NULL)
+	while (shared_resources_ids == NULL)
 	{
 		fprintf(stderr, "Failed to get shared resources: %s\n",
 			strerror(errno));
-		return (EXIT_FAILURE);
+		sleep(1);
+		shared_resources_ids = get_shared_resources(false);
 	}
 	shared_data = shmat(shared_resources_ids->shm_id, NULL, 0);
 	if (shared_data == (void *)-1)
@@ -124,9 +126,6 @@ int	main(void)
 		fprintf(stderr, "shmat: %s\n", strerror(errno));
 		return (EXIT_FAILURE);
 	}
-	app = init_app();
-	if (app == NULL)
-		return (EXIT_FAILURE);
 	while (true)
 	{
 		if (SDL_PollEvent(&event))
