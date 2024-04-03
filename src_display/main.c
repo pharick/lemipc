@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:39:11 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/04 13:08:35 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 18:28:58 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ static t_app	*init_app(void)
 	app = malloc(sizeof(t_app));
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
-		fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
+		ft_printf("SDL_Init: %s\n", SDL_GetError());
 		return (NULL);
 	}
 	app->window = SDL_CreateWindow("lemipc", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+			SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
 	if (app->window == NULL)
 	{
-		fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
+		ft_printf("SDL_CreateWindow: %s\n", SDL_GetError());
 		SDL_Quit();
 		return (NULL);
 	}
@@ -34,7 +34,7 @@ static t_app	*init_app(void)
 			SDL_RENDERER_ACCELERATED);
 	if (app->renderer == NULL)
 	{
-		fprintf(stderr, "SDL_CreateRenderer: %s\n", SDL_GetError());
+		ft_printf("SDL_CreateRenderer: %s\n", SDL_GetError());
 		SDL_DestroyWindow(app->window);
 		SDL_Quit();
 		return (NULL);
@@ -65,9 +65,10 @@ static t_color	get_team_color(size_t team_id)
 	return (color);
 }
 
-void	render_map(SDL_Renderer *renderer,
-	const size_t map[MAP_HEIGHT][MAP_WIDTH])
+void	render_map(t_app *app, const size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
+	int			window_width;
+	int			window_height;
 	size_t		cell_width;
 	size_t		cell_height;
 	size_t		i;
@@ -75,8 +76,9 @@ void	render_map(SDL_Renderer *renderer,
 	SDL_Rect	rect;
 	t_color		color;
 
-	cell_width = WINDOW_WIDTH / MAP_WIDTH;
-	cell_height = WINDOW_HEIGHT / MAP_HEIGHT;
+	SDL_GetWindowSize(app->window, &window_width, &window_height);
+	cell_width = window_width / MAP_WIDTH;
+	cell_height = window_height / MAP_HEIGHT;
 	i = 0;
 	while (i < MAP_HEIGHT)
 	{
@@ -90,12 +92,12 @@ void	render_map(SDL_Renderer *renderer,
 			if (map[i][j] != 0)
 			{
 				color = get_team_color(map[i][j]);
-				SDL_SetRenderDrawColor(renderer,
+				SDL_SetRenderDrawColor(app->renderer,
 					color.r, color.g, color.b, color.a);
-				SDL_RenderFillRect(renderer, &rect);
+				SDL_RenderFillRect(app->renderer, &rect);
 			}
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			SDL_RenderDrawRect(renderer, &rect);
+			SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 255);
+			SDL_RenderDrawRect(app->renderer, &rect);
 			j++;
 		}
 		i++;
@@ -109,21 +111,22 @@ int	main(void)
 	t_shared_resources_ids	*shared_resources_ids;
 	t_shared_data			*shared_data;
 
-	app = init_app();
-	if (app == NULL)
-		return (EXIT_FAILURE);
 	shared_resources_ids = get_shared_resources(false);
 	while (shared_resources_ids == NULL)
 	{
-		fprintf(stderr, "Failed to get shared resources: %s\n",
-			strerror(errno));
+		ft_printf("Failed to get shared resources. Perhaps there is no players running yet.\n");
 		sleep(1);
 		shared_resources_ids = get_shared_resources(false);
 	}
 	shared_data = shmat(shared_resources_ids->shm_id, NULL, 0);
 	if (shared_data == (void *)-1)
 	{
-		fprintf(stderr, "shmat: %s\n", strerror(errno));
+		ft_printf("shmat: %s\n", strerror(errno));
+		return (EXIT_FAILURE);
+	}
+	app = init_app();
+	if (app == NULL) {
+		shmdt(shared_data);
 		return (EXIT_FAILURE);
 	}
 	while (true)
@@ -135,7 +138,7 @@ int	main(void)
 		}
 		SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 		SDL_RenderClear(app->renderer);
-		render_map(app->renderer, shared_data->map);
+		render_map(app, shared_data->map);
 		SDL_RenderPresent(app->renderer);
 	}
 	destroy_app(app);
