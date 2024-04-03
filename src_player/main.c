@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 16:26:48 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/04 15:49:04 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 17:26:55 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ int	return_failure(const char *msg, bool print_errno)
 {	
 	if (msg != NULL)
 	{
-		fprintf(stderr, "%s", msg);
+		ft_printf("%s", msg);
 		if (print_errno)
-			fprintf(stderr, ": %s", strerror(errno));
-		fprintf(stderr, "\n");
+			ft_printf(": %s", strerror(errno));
+		ft_printf("\n");
 	}
 	return (EXIT_FAILURE);
 }
@@ -47,7 +47,7 @@ int	main(int argc, char **argv)
 
 	if (argc < 2)
 	{
-		printf("Usage: %s <team_id>\n", argv[0]);
+		ft_printf("Usage: %s <team_id>\n", argv[0]);
 		return (EXIT_FAILURE);
 	}
 	team_id = parse_team_id(argv[1]);

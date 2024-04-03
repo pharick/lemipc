@@ -6,21 +6,19 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 11:40:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/04 15:48:12 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 17:32:25 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemipc_player.h"
 
-bool	g_running;
-
 static bool	check_game_over(t_coord coord,
 	const size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
 	size_t	team_id;
-	size_t	i;
-	size_t	j;
-	size_t	enemy_counts[MAX_TEAMS];
+	ssize_t	i;
+	ssize_t	j;
+	ssize_t	enemy_counts[MAX_TEAMS];
 
 	team_id = map[coord.y][coord.x];
 	memset(enemy_counts, 0, sizeof(enemy_counts));
@@ -48,8 +46,8 @@ static t_coord	*find_nearest_enemy(const t_coord *coord,
 	t_coord	*nearest_enemy;
 	size_t	min_distance;
 	size_t	distance;
-	size_t	i;
-	size_t	j;
+	ssize_t	i;
+	ssize_t	j;
 
 	min_distance = MAP_WIDTH * MAP_HEIGHT;
 	nearest_enemy = NULL;
@@ -111,6 +109,8 @@ static void	move_towards_coord(t_coord *coord, const t_coord *target,
 		map[new_coord.y][new_coord.x] = map[coord->y][coord->x];
 		map[coord->y][coord->x] = 0;
 		*coord = new_coord;
+		ft_printf("Moving from (%zu, %zu) to (%zu, %zu)\n",
+			coord->x, coord->y, new_coord.x, new_coord.y);
 	}
 }
 
@@ -121,6 +121,7 @@ void	player_turn(t_shared_data *shared_data, t_player_data *player_data)
 	if (check_game_over(player_data->coord, shared_data->map))
 	{
 		g_running = false;
+		ft_printf("Player was caught\n");
 		return ;
 	}
 	nearest_enemy = find_nearest_enemy(&player_data->coord, shared_data->map);

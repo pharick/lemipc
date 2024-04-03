@@ -22,13 +22,13 @@
 
 typedef struct s_coord
 {
-	size_t	x;
-	size_t	y;
+	ssize_t	x;
+	ssize_t	y;
 }	t_coord;
 
 typedef struct s_player_data
 {
-	size_t	team_id;
+	ssize_t	team_id;
 	t_coord	coord;
 }	t_player_data;
 

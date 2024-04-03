@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_specifier.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/26 16:45:54 by cbelva            #+#    #+#             */
+/*   Updated: 2024/04/03 17:53:44 by cbelva           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 static int	ft_print_string(t_specifier specifier, va_list *ap)
@@ -31,8 +43,8 @@ static int	ft_print_integer(t_specifier specifier, va_list *ap)
 		len++;
 	while (len-- > 0)
 	{
-		ft_putchar('0' + n / (int)pow(10, len));
-		n %= (int)pow(10, len);
+		ft_putchar('0' + n / (int)ft_pow(10, len));
+		n %= (int)ft_pow(10, len);
 	}
 	return (len);
 }
@@ -48,8 +60,25 @@ static int	ft_print_unsigned(t_specifier specifier, va_list *ap)
 		len = specifier.precision;
 	while (len-- > 0)
 	{
-		ft_putchar('0' + n / (int)pow(10, len));
-		n %= (int)pow(10, len);
+		ft_putchar('0' + n / (int)ft_pow(10, len));
+		n %= (int)ft_pow(10, len);
+	}
+	return (len);
+}
+
+static int	ft_print_unsigned_long_long(t_specifier specifier, va_list *ap)
+{
+	unsigned long long	n;
+	int					len;
+
+	n = va_arg(*ap, unsigned long long);
+	len = ft_nbrlen(n);
+	if (specifier.precision >= 0 && specifier.precision > len)
+		len = specifier.precision;
+	while (len-- > 0)
+	{
+		ft_putchar('0' + n / (int)ft_pow(10, len));
+		n %= (int)ft_pow(10, len);
 	}
 	return (len);
 }
@@ -70,8 +99,8 @@ static int	ft_print_hex(t_specifier specifier, va_list *ap)
 		len = specifier.precision;
 	while (len-- > 0)
 	{
-		ft_putchar(base[n / (int)pow(16, len)]);
-		n %= (int)pow(16, len);
+		ft_putchar(base[n / (int)ft_pow(16, len)]);
+		n %= (int)ft_pow(16, len);
 	}
 	return (len);
 }
@@ -89,8 +118,8 @@ static int	ft_print_pointer(t_specifier specifier, va_list *ap)
 		len = specifier.precision;
 	while (len-- > 0)
 	{
-		ft_putchar(base[n / (int)pow(16, len)]);
-		n %= (int)pow(16, len);
+		ft_putchar(base[n / (int)ft_pow(16, len)]);
+		n %= (int)ft_pow(16, len);
 	}
 	return (len);
 }
@@ -101,9 +130,11 @@ int	ft_print_specifier(t_specifier specifier, va_list *ap)
 		return (ft_print_string(specifier, ap));
 	else if (specifier.type == 'd' || specifier.type == 'i')
 		return (ft_print_integer(specifier, ap));
-	else if (specifier.type == 'u')
+	else if (specifier.type == 'u') {
+		if (!ft_strcmp(specifier.length, "ll") || !ft_strcmp(specifier.length, "z"))
+			return (ft_print_unsigned_long_long(specifier, ap));
 		return (ft_print_unsigned(specifier, ap));
-	else if (specifier.type == 'x' || specifier.type == 'X')
+	} else if (specifier.type == 'x' || specifier.type == 'X')
 		return (ft_print_hex(specifier, ap));
 	else if (specifier.type == 'p')
 		return (ft_print_pointer(specifier, ap));

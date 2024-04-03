@@ -1,13 +1,13 @@
 TARGET_PLAYER		:= lemipc
 TARGET_DISPLAY		:= lemipc_display
 
-CC					:= clang
+CC					:= gcc
 CFLAGS_PLAYER		:=
 CFLAGS_DISPLAY		:= $(shell sdl2-config --cflags)
-CFLAGS_COMMON		:= -I. -Wall -Wextra -Werror -MMD -MP
+CFLAGS_COMMON		:= -I. -I./libft/include -Wall -Wextra -Werror -MMD -MP
 LDFLAGS_PLAYER		:=
-LDFLAGS_DISPLAY		:= $(shell sdl2-config --libs)
-LDFLAGS_COMMON		:=
+LDFLAGS_DISPLAY		:= $(shell sdl2-config --libs) -lm
+LDFLAGS_COMMON		:= -L./libft/build -lft
 
 SRC_PLAYER_DIR		:= src_player
 SRC_DISPLAY_DIR		:= src_display
@@ -29,24 +29,26 @@ DEPS				:= $(OBJ_PLAYER:.o=.d) $(OBJ_DISPLAY:.o=.d) $(OBJ_COMMON:.o=.d)
 all:	$(TARGET_PLAYER) $(TARGET_DISPLAY)
 
 $(TARGET_PLAYER):	$(OBJ_PLAYER) $(OBJ_COMMON)
-	$(CC) $(LDFLAGS_PLAYER) $(LDFLAGS_COMMON) -o $@ $^
+	make -C libft
+	$(CC) -o $@ $^ $(LDFLAGS_PLAYER) $(LDFLAGS_COMMON)
 
 $(TARGET_DISPLAY):	$(OBJ_DISPLAY) $(OBJ_COMMON)
-	$(CC) $(LDFLAGS_DISPLAY) $(LDFLAGS_COMMON) -o $@ $^
+	make -C libft
+	$(CC) -o $@ $^ $(LDFLAGS_DISPLAY) $(LDFLAGS_COMMON)
 
 $(OBJ_PLAYER):	%.o:	%.c
-	$(CC) $(CFLAGS_PLAYER) $(CFLAGS_COMMON) -c -o $@ $<
+	$(CC) -c -o $@ $< $(CFLAGS_PLAYER) $(CFLAGS_COMMON)
 
 $(OBJ_DISPLAY):	%.o:	%.c
-	$(CC) $(CFLAGS_DISPLAY) $(CFLAGS_COMMON) -c -o $@ $<
+	$(CC) -c -o $@ $< $(CFLAGS_DISPLAY) $(CFLAGS_COMMON)
 
 $(OBJ_COMMON):	%.o:	%.c
-	$(CC) $(CFLAGS_COMMON) -c -o $@ $<
+	$(CC) -c -o $@ $< $(CFLAGS_COMMON)
 
 -include $(DEPS)
 
 clean:
-	rm -f $(OBJ_PLAYER) $(OBJ_DISPLAY) $(DEPS)
+	rm -f $(OBJ_PLAYER) $(OBJ_DISPLAY) $(OBJ_COMMON) $(DEPS)
 
 fclean:	clean
 	rm -rf $(TARGET_PLAYER) $(TARGET_DISPLAY)

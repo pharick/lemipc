@@ -88,7 +88,7 @@ static char	*ft_parse_length(const char **format)
 		else if (**format == 'j')
 			length = "j";
 		if (length)
-			(*format) += ft_strlen(length) - 1;
+			(*format) += ft_strlen(length);
 	}
 	return (length);
 }
@@ -116,4 +116,15 @@ t_specifier	ft_parse_specifier(const char **format, va_list *ap)
 	specifier.length = ft_parse_length(format);
 	specifier.type = ft_parse_type(format);
 	return (specifier);
+}
+
+void	ft_print_specifier_info(t_specifier specifier)
+{
+	printf("\n---\n");
+	printf("flags: %d\n", specifier.flags);
+	printf("width: %d\n", specifier.width);
+	printf("precision: %d\n", specifier.precision);
+	printf("length: %s\n", specifier.length);
+	printf("type: %c\n", specifier.type);
+	printf("\n---\n");
 }

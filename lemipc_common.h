@@ -1,3 +1,5 @@
+
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -6,7 +8,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 15:36:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/04 13:05:15 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/02/26 18:22:09 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +18,6 @@
 # define MAP_WIDTH 10
 # define MAP_HEIGHT 10
 
-# include <stdio.h>
 # include <unistd.h>
 # include <stdbool.h>
 # include <stdlib.h>
@@ -25,6 +26,8 @@
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <sys/sem.h>
+
+# include "libft.h"
 
 typedef struct s_shared_data
 {

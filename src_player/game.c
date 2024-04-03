@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 18:05:27 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 17:33:52 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	player_start(t_shared_data *shared_data, t_player_data *player_data)
 	}
 	shared_data->map[player_data->coord.y][player_data->coord.x]
 		= player_data->team_id;
+	ft_printf("Player joined team %zu at (%zu, %zu)\n",
+		player_data->team_id, player_data->coord.x, player_data->coord.y);
 }
 
 static void	player_finish(t_shared_data *shared_data,
@@ -39,8 +41,7 @@ static void	player_finish(t_shared_data *shared_data,
 {
 	shared_data->nb_players--;
 	shared_data->map[player_data->coord.y][player_data->coord.x] = 0;
-	printf("Player %zu. Coord: (%zu, %zu) left the game\n",
-		player_data->team_id, player_data->coord.x, player_data->coord.y);
+	ft_printf("Player left the game");
 }
 
 size_t	game_loop(size_t team_id, t_shared_data *shared_data,
