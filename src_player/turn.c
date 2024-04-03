@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 11:40:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 17:32:25 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 21:36:07 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,30 @@ static t_coord	*find_nearest_enemy(const t_coord *coord,
 	return (nearest_enemy);
 }
 
-static void	move_towards_coord(t_coord *coord, const t_coord *target,
+t_coord	get_around_coords(const t_coord *coord, t_coord target)
+{
+	t_coord new_coord;
+
+	if (target.x == coord->x)
+	{
+		new_coord.y = coord->y;
+		if (target.y > coord->y)
+			new_coord.x = coord->x + 1;
+		else
+			new_coord.x = coord->x - 1;
+	}
+	else
+	{
+		new_coord.x = coord->x;
+		if (target.x > coord->x)
+			new_coord.y = coord->y + 1;
+		else
+			new_coord.y = coord->y - 1;
+	}
+	return (new_coord);
+}
+
+bool	move_towards_coord(t_coord *coord, const t_coord *target,
 	size_t map[MAP_HEIGHT][MAP_WIDTH])
 {
 	int		dx;
@@ -102,16 +125,24 @@ static void	move_towards_coord(t_coord *coord, const t_coord *target,
 		else
 			new_coord.y = coord->y - 1;
 	}
-	if (new_coord.x >= 0 && new_coord.x < MAP_WIDTH
-		&& new_coord.y >= 0 && new_coord.y < MAP_HEIGHT
-		&& map[new_coord.y][new_coord.x] == 0)
+	if (new_coord.x < 0 || new_coord.x >= MAP_WIDTH || new_coord.y < 0 || new_coord.y >= MAP_HEIGHT)
+		return (false);
+	if (map[new_coord.y][new_coord.x] != 0)
 	{
-		map[new_coord.y][new_coord.x] = map[coord->y][coord->x];
-		map[coord->y][coord->x] = 0;
-		*coord = new_coord;
-		ft_printf("Moving from (%zu, %zu) to (%zu, %zu)\n",
-			coord->x, coord->y, new_coord.x, new_coord.y);
+		ft_printf("Stuck. Can't move to (%zu, %zu)\n", new_coord.x, new_coord.y);
+		new_coord = get_around_coords(coord, new_coord);
+		if (new_coord.x < 0 || new_coord.x >= MAP_WIDTH
+			|| new_coord.y < 0 || new_coord.y >= MAP_HEIGHT
+			|| map[new_coord.y][new_coord.x] != 0)
+			return (false);
+		ft_printf("Going around to (%zu, %zu)\n", new_coord.x, new_coord.y);
 	}
+	ft_printf("Moving from (%zu, %zu) to (%zu, %zu)\n",
+		coord->x, coord->y, new_coord.x, new_coord.y);
+	map[new_coord.y][new_coord.x] = map[coord->y][coord->x];
+	map[coord->y][coord->x] = 0;
+	*coord = new_coord;
+	return (true);
 }
 
 void	player_turn(t_shared_data *shared_data, t_player_data *player_data)

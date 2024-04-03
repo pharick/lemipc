@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 17:33:52 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/03 21:21:18 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ size_t	game_loop(size_t team_id, t_shared_data *shared_data,
 	{
 		with_data(shared_resources_ids->sem_id,
 			shared_data, player_data, player_turn);
-		sleep(1);
+		usleep(500000);
 	}
 	with_data(shared_resources_ids->sem_id,
 		shared_data, player_data, player_finish);
