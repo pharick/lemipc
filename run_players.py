@@ -77,7 +77,8 @@ def main():
         for team_id, team_count in enumerate(team_counts, start=1):
             for _ in range(team_count):
                 executor.submit(run_player, i, team_id)
-                sleep(0.1)
+                if i == 1:
+                    sleep(0.5)
                 i += 1
 
         executor.shutdown(wait=True)

@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 15:06:25 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 17:14:13 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/04 14:40:49 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 # include "lemipc_common.h"
 
-# define WINDOW_WIDTH 300
-# define WINDOW_HEIGHT 300
+# define WINDOW_WIDTH 600
+# define WINDOW_HEIGHT 600
 
 typedef struct s_app
 {

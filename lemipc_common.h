@@ -15,8 +15,8 @@
 #ifndef LEMIPC_COMMON_H
 # define LEMIPC_COMMON_H
 
-# define MAP_WIDTH 10
-# define MAP_HEIGHT 10
+# define MAP_WIDTH 20
+# define MAP_HEIGHT 20
 
 # include <unistd.h>
 # include <stdbool.h>
@@ -45,5 +45,6 @@ typedef struct s_shared_resources_ids
 t_shared_resources_ids	*get_shared_resources(bool create);
 t_shared_data			read_shared_data(int sem_id,
 							t_shared_data *shared_data);
+size_t					check_winning_team(const size_t map[MAP_HEIGHT][MAP_WIDTH]);
 
 #endif

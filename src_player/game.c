@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 21:21:18 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/04 15:11:28 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void	player_start(t_shared_data *shared_data, t_player_data *player_data)
 	player_data->coord.y = rand() % MAP_HEIGHT;
 	while (shared_data->map[player_data->coord.y][player_data->coord.x] != 0)
 	{
-		player_data->coord.x = rand() % MAP_WIDTH;
+		ft_printf("Searching for an initial position...\n");
+		player_data->coord.x = rand() % MAP_WIDTH;;
 		player_data->coord.y = rand() % MAP_HEIGHT;
 	}
 	shared_data->map[player_data->coord.y][player_data->coord.x]
@@ -63,7 +64,7 @@ size_t	game_loop(size_t team_id, t_shared_data *shared_data,
 	{
 		with_data(shared_resources_ids->sem_id,
 			shared_data, player_data, player_turn);
-		usleep(500000);
+		usleep(700000);
 	}
 	with_data(shared_resources_ids->sem_id,
 		shared_data, player_data, player_finish);
