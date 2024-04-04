@@ -6,7 +6,7 @@ CFLAGS_PLAYER		:=
 CFLAGS_DISPLAY		:= $(shell sdl2-config --cflags)
 CFLAGS_COMMON		:= -I. -I./libft/include -Wall -Wextra -Werror -MMD -MP
 LDFLAGS_PLAYER		:=
-LDFLAGS_DISPLAY		:= $(shell sdl2-config --libs) -lm
+LDFLAGS_DISPLAY		:= $(shell sdl2-config --libs) -lSDL2_ttf -lm
 LDFLAGS_COMMON		:= -L./libft/build -lft
 
 SRC_PLAYER_DIR		:= src_player

@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 13:39:11 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 18:28:58 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 01:55:24 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@ static t_app	*init_app(void)
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		ft_printf("SDL_Init: %s\n", SDL_GetError());
+		return (NULL);
+	}
+	if (TTF_Init() != 0)
+	{
+		ft_printf("TTF_Init: %s\n", TTF_GetError());
+		SDL_Quit();
+		return (NULL);
+	}
+	app->font = TTF_OpenFont("assets/VT323-Regular.ttf", 24);
+	if (app->font == NULL)
+	{
+		ft_printf("TTF_OpenFont: %s\n", TTF_GetError());
+		TTF_Quit();
+		SDL_Quit();
 		return (NULL);
 	}
 	app->window = SDL_CreateWindow("lemipc", SDL_WINDOWPOS_CENTERED,
@@ -44,6 +58,8 @@ static t_app	*init_app(void)
 
 static void	destroy_app(t_app *app)
 {
+	TTF_CloseFont(app->font);
+	TTF_Quit();
 	SDL_DestroyRenderer(app->renderer);
 	SDL_DestroyWindow(app->window);
 	SDL_Quit();
@@ -75,6 +91,9 @@ void	render_map(t_app *app, const size_t map[MAP_HEIGHT][MAP_WIDTH])
 	size_t		j;
 	SDL_Rect	rect;
 	t_color		color;
+	SDL_Color	text_color;
+	SDL_Surface	*text_surface;
+	SDL_Texture	*text_texture;
 
 	SDL_GetWindowSize(app->window, &window_width, &window_height);
 	cell_width = window_width / MAP_WIDTH;
@@ -95,6 +114,14 @@ void	render_map(t_app *app, const size_t map[MAP_HEIGHT][MAP_WIDTH])
 				SDL_SetRenderDrawColor(app->renderer,
 					color.r, color.g, color.b, color.a);
 				SDL_RenderFillRect(app->renderer, &rect);
+				text_color = (SDL_Color){255, 255, 255, 255};
+				text_surface = TTF_RenderText_Solid(app->font,
+					ft_itoa(map[i][j]), text_color);
+				text_texture = SDL_CreateTextureFromSurface(
+					app->renderer, text_surface);
+				SDL_RenderCopy(app->renderer, text_texture, NULL, &rect);
+				SDL_FreeSurface(text_surface);
+				SDL_DestroyTexture(text_texture);
 			}
 			SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 255);
 			SDL_RenderDrawRect(app->renderer, &rect);
@@ -135,6 +162,11 @@ int	main(void)
 		{
 			if (event.type == SDL_QUIT)
 				break ;
+		}
+		if (shared_data->nb_players == 0)
+		{
+			ft_printf("No players left, exiting...\n");
+			break ;
 		}
 		SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 		SDL_RenderClear(app->renderer);

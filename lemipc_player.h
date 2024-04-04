@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 23:22:58 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/04 23:40:01 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 02:07:08 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 # include "lemipc_common.h"
 
-# define MAX_TEAMS 10
+# define MAX_TEAMS 9
 
 typedef struct s_coord
 {

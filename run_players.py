@@ -5,14 +5,16 @@ from time import sleep
 from sys import argv
 from concurrent.futures import ThreadPoolExecutor
 
-processes = []
-threads = []
+processes: list[subprocess.Popen[str]] = []
+threads: list[threading.Thread] = []
 
 
 def handle_signal(*_):
     print("Received termination signal. Stopping...")
     # Send SIGINT to all subprocesses
     for process in processes:
+        if process.poll() is not None:
+            continue
         process.send_signal(signal.SIGINT)
         processes.remove(process)
     # Wait for all threads to finish
@@ -53,15 +55,14 @@ def run_player(number: int, team_id: int):
 
 
 def run_display():
-    process = subprocess.Popen('./lemipc_display', shell=True)
-    processes.append(process)
+    subprocess.Popen('./lemipc_display', shell=True)
 
 def main():
     if len(argv) < 2 or not all(x.isdigit() for x in argv[1:]):
         print("Usage: python run_players.py <team_count> [team_count...]")
         exit(1)
-    if len(argv) - 1 > 10:
-        print("Maximum 10 teams allowed")
+    if len(argv) - 1 > 9:
+        print("Maximum 9 teams allowed")
         exit(1)
 
     team_counts = [int(x) for x in argv[1:]]

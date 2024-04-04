@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 15:49:41 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 17:49:26 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 01:34:37 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ int		ft_isdigit(int c);
 int		ft_nbrlen(int n);
 size_t	ft_pow(size_t n, unsigned int p);
 int		ft_strcmp(const char *str1, const char *str2);
+char	*ft_itoa(int n);
 
 #endif
