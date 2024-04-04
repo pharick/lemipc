@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 11:40:34 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/04 15:11:51 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 00:40:05 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,9 +145,42 @@ bool	move_towards_coord(t_coord *coord, const t_coord *target,
 	return (true);
 }
 
-void	player_turn(t_shared_data *shared_data, t_player_data *player_data)
+void	recieve_target_from_queue(int msq_id, size_t team_id, t_coord **coord, size_t *target_team_id)
 {
-	t_coord	*nearest_enemy;
+	t_target_message	message;
+	ssize_t				ret;
+
+
+	*coord = NULL;
+	ret = msgrcv(msq_id, &message, sizeof(t_target_message), team_id, IPC_NOWAIT);
+	if (ret == -1)
+	{
+		if (errno != ENOMSG)
+			ft_printf("Error receiving message: %s\n", strerror(errno));
+		return ;
+	}
+	*coord = malloc(sizeof(t_coord));
+	if (*coord == NULL)
+		return ;
+	**coord = message.coord;
+	*target_team_id = message.target_team_id;
+}
+
+void	send_target_to_queue(int msq_id, size_t team_id, t_coord coord, size_t target_team_id)
+{
+	t_target_message	message;
+
+	message.team_id = team_id;
+	message.coord = coord;
+	message.target_team_id = target_team_id;
+	if (msgsnd(msq_id, &message, sizeof(t_target_message), 0) == -1)
+		ft_printf("Error sending message: %s\n", strerror(errno));
+}
+
+void	player_turn(t_shared_data *shared_data, t_player_data *player_data, int msq_id)
+{
+	t_coord	*target;
+	size_t	target_team_id;
 
 	if (check_game_over(player_data->coord, shared_data->map))
 	{
@@ -155,9 +188,26 @@ void	player_turn(t_shared_data *shared_data, t_player_data *player_data)
 		ft_printf("Player was caught\n");
 		return ;
 	}
-	nearest_enemy = find_nearest_enemy(&player_data->coord, shared_data->map);
-	if (nearest_enemy == NULL)
+	recieve_target_from_queue(msq_id, player_data->team_id, &target, &target_team_id);
+	if (target != NULL
+		&& target->x >= 0 && target->x < MAP_WIDTH
+		&& target->y >= 0 && target->y < MAP_HEIGHT
+		&& shared_data->map[target->y][target->x] == target_team_id)
+	{
+		ft_printf("Recieved target (%zu, %zu) from message queue\n", target->x, target->y);
+		move_towards_coord(&player_data->coord, target, shared_data->map);
+		send_target_to_queue(msq_id, player_data->team_id, player_data->coord, target_team_id);
+		free(target);
 		return ;
-	move_towards_coord(&player_data->coord, nearest_enemy, shared_data->map);
-	free(nearest_enemy);
+	}
+	if (target != NULL)
+		free(target);
+	target = find_nearest_enemy(&player_data->coord, shared_data->map);
+	if (target == NULL)
+		return ;
+	move_towards_coord(&player_data->coord, target, shared_data->map);
+	target_team_id = shared_data->map[target->y][target->x];
+	ft_printf("Found target by team %zu at (%zu, %zu)\n", target_team_id, target->x, target->y);
+	send_target_to_queue(msq_id, player_data->team_id, *target, target_team_id);
+	free(target);
 }

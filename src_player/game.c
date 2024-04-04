@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 14:49:23 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/04 15:11:28 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 00:12:06 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@ bool	g_running;
 static void	handle_sigint(int sig)
 {
 	(void)sig;
+	ft_printf("Recieved termination signal\n");
 	g_running = false;
 }
 
-static void	player_start(t_shared_data *shared_data, t_player_data *player_data)
+static void	player_start(t_shared_data *shared_data, t_player_data *player_data, int msq_id)
 {
+	(void)msq_id;
 	shared_data->nb_players++;
 	player_data->coord.x = rand() % MAP_WIDTH;
 	player_data->coord.y = rand() % MAP_HEIGHT;
@@ -38,11 +40,12 @@ static void	player_start(t_shared_data *shared_data, t_player_data *player_data)
 }
 
 static void	player_finish(t_shared_data *shared_data,
-	t_player_data *player_data)
+	t_player_data *player_data, int msq_id)
 {
+	(void)msq_id;
 	shared_data->nb_players--;
 	shared_data->map[player_data->coord.y][player_data->coord.x] = 0;
-	ft_printf("Player left the game");
+	ft_printf("Player left the game\n");
 }
 
 size_t	game_loop(size_t team_id, t_shared_data *shared_data,
@@ -57,16 +60,16 @@ size_t	game_loop(size_t team_id, t_shared_data *shared_data,
 		return (read_shared_data(shared_resources_ids->sem_id,
 				shared_data).nb_players);
 	player_data->team_id = team_id;
-	with_data(shared_resources_ids->sem_id,
+	with_data(shared_resources_ids->sem_id, shared_resources_ids->msq_id,
 		shared_data, player_data, player_start);
 	g_running = true;
 	while (g_running)
 	{
-		with_data(shared_resources_ids->sem_id,
+		with_data(shared_resources_ids->sem_id, shared_resources_ids->msq_id,
 			shared_data, player_data, player_turn);
-		usleep(700000);
+		usleep(500000);
 	}
-	with_data(shared_resources_ids->sem_id,
+	with_data(shared_resources_ids->sem_id, shared_resources_ids->msq_id,
 		shared_data, player_data, player_finish);
 	free(player_data);
 	return (read_shared_data(shared_resources_ids->sem_id,

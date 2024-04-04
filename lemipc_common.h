@@ -26,6 +26,7 @@
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <sys/sem.h>
+# include <sys/msg.h>
 
 # include "libft.h"
 
@@ -40,6 +41,7 @@ typedef struct s_shared_resources_ids
 	key_t	key;
 	int		shm_id;
 	int		sem_id;
+	int		msq_id;
 }	t_shared_resources_ids;
 
 t_shared_resources_ids	*get_shared_resources(bool create);

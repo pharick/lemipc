@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 16:26:48 by cbelva            #+#    #+#             */
-/*   Updated: 2024/04/03 17:26:55 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/05 00:37:26 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ int	main(int argc, char **argv)
 	}
 	nb_players_left = game_loop(team_id, shared_data, shared_resources_ids);
 	shmdt(shared_data);
-	if (nb_players_left <= 0)
+	if (nb_players_left <= 0) {
+		ft_printf("I'm the last player, cleaning up...\n");
 		clean_shared_resources(shared_resources_ids);
+	}
+	free(shared_resources_ids);
 	return (EXIT_SUCCESS);
 }

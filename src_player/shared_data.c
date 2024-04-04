@@ -6,13 +6,13 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 16:03:08 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 16:31:51 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/04 22:56:57 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemipc_player.h"
 
-void	with_data(int sem_id, t_shared_data *shared_data,
+void	with_data(int sem_id, int msq_id, t_shared_data *shared_data,
 	t_player_data *player_data, t_shared_data_operation op)
 {
 	struct sembuf	sem_op;
@@ -21,7 +21,7 @@ void	with_data(int sem_id, t_shared_data *shared_data,
 	sem_op.sem_op = -1;
 	sem_op.sem_flg = 0;
 	semop(sem_id, &sem_op, 1);
-	op(shared_data, player_data);
+	op(shared_data, player_data, msq_id);
 	sem_op.sem_op = 1;
 	semop(sem_id, &sem_op, 1);
 }

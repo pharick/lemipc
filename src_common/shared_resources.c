@@ -6,7 +6,7 @@
 /*   By: cbelva <cbelva@student.42bangkok.com>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 00:17:31 by cbelva            #+#    #+#             */
-/*   Updated: 2024/02/02 18:04:24 by cbelva           ###   ########.fr       */
+/*   Updated: 2024/04/04 21:18:04 by cbelva           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,20 @@ static int	get_shared_memory(key_t key, bool create)
 	return (shm_id);
 }
 
+static int	get_message_queue(key_t key, bool create)
+{
+	int	msq_id;
+
+	msq_id = msgget(key, 0666);
+	if (msq_id == -1 && create)
+	{
+		msq_id = msgget(key, 0666 | IPC_CREAT | IPC_EXCL);
+		if (msq_id == -1)
+			return (-1);
+	}
+	return (msq_id);
+}
+
 t_shared_resources_ids	*get_shared_resources(bool create)
 {
 	t_shared_resources_ids	*ids;
@@ -67,6 +81,14 @@ t_shared_resources_ids	*get_shared_resources(bool create)
 	if (ids->shm_id == -1)
 	{
 		semctl(ids->sem_id, 0, IPC_RMID);
+		free(ids);
+		return (NULL);
+	}
+	ids->msq_id = get_message_queue(ids->key, create);
+	if (ids->msq_id == -1)
+	{
+		semctl(ids->sem_id, 0, IPC_RMID);
+		shmctl(ids->shm_id, IPC_RMID, NULL);
 		free(ids);
 		return (NULL);
 	}
