@@ -20,7 +20,7 @@
 
 # define MAX_TEAMS 9
 
-typedef struct s_coord
+typedef struct __attribute__((packed)) s_coord
 {
 	ssize_t	x;
 	ssize_t	y;
@@ -32,7 +32,7 @@ typedef struct s_player_data
 	t_coord	coord;
 }	t_player_data;
 
-typedef struct s_target_message
+typedef struct __attribute__((packed)) s_target_message
 {
 	long	team_id;
 	t_coord	coord;

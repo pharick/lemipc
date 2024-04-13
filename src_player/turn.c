@@ -150,9 +150,8 @@ void	recieve_target_from_queue(int msq_id, size_t team_id, t_coord **coord, size
 	t_target_message	message;
 	ssize_t				ret;
 
-
 	*coord = NULL;
-	ret = msgrcv(msq_id, &message, sizeof(t_target_message), team_id, IPC_NOWAIT);
+	ret = msgrcv(msq_id, &message, sizeof(t_target_message) - sizeof(long), team_id, IPC_NOWAIT);
 	if (ret == -1)
 	{
 		if (errno != ENOMSG)
@@ -173,7 +172,7 @@ void	send_target_to_queue(int msq_id, size_t team_id, t_coord coord, size_t targ
 	message.team_id = team_id;
 	message.coord = coord;
 	message.target_team_id = target_team_id;
-	if (msgsnd(msq_id, &message, sizeof(t_target_message), 0) == -1)
+	if (msgsnd(msq_id, &message, sizeof(t_target_message) - sizeof(long), 0) == -1)
 		ft_printf("Error sending message: %s\n", strerror(errno));
 }
 
